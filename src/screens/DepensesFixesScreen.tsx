@@ -6,6 +6,7 @@ import { useBudj } from '../data/BudjContext';
 import { colors, layout, spacing, typography } from '../theme';
 import type { RootScreenProps } from '../navigation/types';
 import { AjouterDepenseFixeSheet } from './AjouterDepenseFixeSheet';
+import { AjouterDepenseSheet } from './AjouterDepenseSheet';
 
 /**
  * Onglet "Fixe" de la barre de navigation — pixel perfect sur le node Figma
@@ -18,6 +19,7 @@ export function DepensesFixesScreen({ navigation }: RootScreenProps<'DepensesFix
   const { state, fixedBudgetTotal, deleteFixedExpense } = useBudj();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [addSheetOpen, setAddSheetOpen] = useState(false);
+  const [addDepenseSheetOpen, setAddDepenseSheetOpen] = useState(false);
 
   const expenseCountByDay = useMemo(() => {
     const counts: Record<number, number> = {};
@@ -77,11 +79,12 @@ export function DepensesFixesScreen({ navigation }: RootScreenProps<'DepensesFix
             if (section === 'categories') navigation.navigate('MonBudget');
             if (section === 'historique') navigation.navigate('Historique');
           }}
-          onAdd={() => navigation.navigate('AjouterDepense')}
+          onAdd={() => setAddDepenseSheetOpen(true)}
         />
       </View>
 
       <AjouterDepenseFixeSheet visible={addSheetOpen} onClose={() => setAddSheetOpen(false)} />
+      <AjouterDepenseSheet visible={addDepenseSheetOpen} onClose={() => setAddDepenseSheetOpen(false)} />
     </SafeAreaView>
   );
 }

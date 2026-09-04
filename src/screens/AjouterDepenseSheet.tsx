@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { AmountField, Icon } from '../components';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AmountField, BottomSheet, Icon } from '../components';
 import { useBudj } from '../data/BudjContext';
-import { colors, radius, spacing, typography } from '../theme';
-import type { RootScreenProps } from '../navigation/types';
+import { colors, spacing, typography } from '../theme';
 import type { PaymentMethod } from '../data/types';
 
 const PAYMENT_METHODS: PaymentMethod[] = ['Carte bancaire', 'Espèces', 'Apple pay'];
+
+type Props = {
+  visible: boolean;
+  onClose: () => void;
+};
 
 /**
  * Pixel perfect sur le popup Figma 18:472 "Pop up ajout" (section "Ajouter
@@ -17,8 +20,14 @@ const PAYMENT_METHODS: PaymentMethod[] = ['Carte bancaire', 'Espèces', 'Apple p
  * des autres popups. "Ajouter une autre dépense ?" enregistre la dépense en
  * cours et réinitialise le formulaire pour en saisir une autre sans
  * refermer la feuille ; "Valider" enregistre et referme.
+ *
+ * C'est une vraie feuille modale (<BottomSheet>, pas une route de
+ * navigation) : la page en dessous reste visible derrière, elle ne prend
+ * pas toute la hauteur de l'écran — voir le message de l'utilisateur qui a
+ * explicitement demandé ce changement (avant : écran plein qui remplaçait
+ * la page en cours).
  */
-export function AjouterDepenseScreen({ navigation }: RootScreenProps<'AjouterDepense'>) {
+export function AjouterDepenseSheet({ visible, onClose }: Props) {
   const { state, addExpense } = useBudj();
 
   const [amount, setAmount] = useState('');
@@ -49,76 +58,79 @@ export function AjouterDepenseScreen({ navigation }: RootScreenProps<'AjouterDep
   };
 
   const submit = () => {
-    if (save()) navigation.goBack();
+    if (save()) {
+      reset();
+      onClose();
+    }
   };
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.body}>
-        <Pressable onPress={() => navigation.goBack()} hitSlop={12} style={styles.handle} />
+    <BottomSheet
+      visible={visible}
+      onClose={() => {
+        reset();
+        onClose();
+      }}
+    >
+      <Text style={typography.h1}>Ajouter une dépense</Text>
 
-        <View style={styles.infos}>
-          <Text style={typography.h1}>Ajouter une dépense</Text>
+      <View style={styles.form}>
+        <AmountField value={amount} onChangeText={setAmount} />
 
-          <View style={styles.form}>
-            <AmountField value={amount} onChangeText={setAmount} />
+        <TextInput
+          value={label}
+          onChangeText={setLabel}
+          placeholder="Libellé"
+          placeholderTextColor={colors.gris}
+          style={styles.bareInput}
+        />
 
-            <TextInput
-              value={label}
-              onChangeText={setLabel}
-              placeholder="Libellé"
-              placeholderTextColor={colors.gris}
-              style={styles.bareInput}
-            />
-
-            <BareSelector
-              placeholder="Catégorie"
-              value={category?.name}
-              open={openPicker === 'categorie'}
-              onPress={() => setOpenPicker((p) => (p === 'categorie' ? null : 'categorie'))}
-            />
-            {openPicker === 'categorie' && (
-              <View style={styles.picker}>
-                {state.categories.map((c) => (
-                  <Pressable
-                    key={c.id}
-                    onPress={() => {
-                      setCategoryId(c.id);
-                      setOpenPicker(null);
-                    }}
-                    style={[styles.chip, { backgroundColor: c.color.fond }, categoryId === c.id && styles.chipSelected]}
-                  >
-                    <Text style={[typography.labelXsMedium, { color: c.color.texte }]}>{c.name}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-
-            <BareSelector
-              placeholder="Moyen de paiement"
-              value={paymentMethod}
-              open={openPicker === 'paiement'}
-              onPress={() => setOpenPicker((p) => (p === 'paiement' ? null : 'paiement'))}
-            />
-            {openPicker === 'paiement' && (
-              <View style={styles.picker}>
-                {PAYMENT_METHODS.map((m) => (
-                  <Pressable
-                    key={m}
-                    onPress={() => {
-                      setPaymentMethod(m);
-                      setOpenPicker(null);
-                    }}
-                    style={[styles.chip, { backgroundColor: colors.bleue[50] }, paymentMethod === m && styles.chipSelected]}
-                  >
-                    <Text style={typography.labelXsMedium}>{m}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
+        <BareSelector
+          placeholder="Catégorie"
+          value={category?.name}
+          open={openPicker === 'categorie'}
+          onPress={() => setOpenPicker((p) => (p === 'categorie' ? null : 'categorie'))}
+        />
+        {openPicker === 'categorie' && (
+          <View style={styles.picker}>
+            {state.categories.map((c) => (
+              <Pressable
+                key={c.id}
+                onPress={() => {
+                  setCategoryId(c.id);
+                  setOpenPicker(null);
+                }}
+                style={[styles.chip, { backgroundColor: c.color.fond }, categoryId === c.id && styles.chipSelected]}
+              >
+                <Text style={[typography.labelXsMedium, { color: c.color.texte }]}>{c.name}</Text>
+              </Pressable>
+            ))}
           </View>
-        </View>
-      </ScrollView>
+        )}
+
+        <BareSelector
+          placeholder="Moyen de paiement"
+          value={paymentMethod}
+          open={openPicker === 'paiement'}
+          onPress={() => setOpenPicker((p) => (p === 'paiement' ? null : 'paiement'))}
+        />
+        {openPicker === 'paiement' && (
+          <View style={styles.picker}>
+            {PAYMENT_METHODS.map((m) => (
+              <Pressable
+                key={m}
+                onPress={() => {
+                  setPaymentMethod(m);
+                  setOpenPicker(null);
+                }}
+                style={[styles.chip, { backgroundColor: colors.bleue[50] }, paymentMethod === m && styles.chipSelected]}
+              >
+                <Text style={typography.labelXsMedium}>{m}</Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+      </View>
 
       <View style={styles.actions}>
         <Pressable onPress={addAnother} disabled={!canSubmit} style={[styles.secondaryButton, !canSubmit && styles.buttonDisabled]}>
@@ -131,7 +143,7 @@ export function AjouterDepenseScreen({ navigation }: RootScreenProps<'AjouterDep
           <Text style={styles.primaryLabel}>Valider</Text>
         </Pressable>
       </View>
-    </SafeAreaView>
+    </BottomSheet>
   );
 }
 
@@ -158,18 +170,13 @@ function BareSelector({
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#F6F6F6', borderTopLeftRadius: radius.screen, borderTopRightRadius: radius.screen },
-  body: { paddingHorizontal: spacing.xxl, paddingTop: spacing.xxl, paddingBottom: spacing.xxl, gap: spacing.xxl, alignItems: 'center' },
-  handle: { width: 64, height: 6, borderRadius: 32, backgroundColor: colors.bleue[100] },
-  infos: { width: '100%', gap: spacing.xxl },
   form: { width: '100%', gap: spacing.md },
   bareInput: { fontFamily: 'Outfit_500Medium', fontSize: 18, lineHeight: 20, padding: 0, color: colors.texte },
   bareRow: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   picker: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: 999 },
   chipSelected: { borderWidth: 2, borderColor: colors.bleue[500] },
-  // En dehors du ScrollView : fixé en bas de l'écran, pas emporté par le défilement du formulaire
-  actions: { width: '100%', gap: spacing.md, paddingHorizontal: spacing.xxl, paddingBottom: spacing.xxl },
+  actions: { width: '100%', gap: spacing.md },
   secondaryButton: {
     width: '100%',
     flexDirection: 'row',

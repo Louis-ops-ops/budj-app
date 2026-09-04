@@ -7,6 +7,7 @@ import { colors, layout, spacing, typography } from '../theme';
 import type { RootScreenProps } from '../navigation/types';
 import { NON_CATEGORISE_ID } from '../data/types';
 import { AjouterCategorieSheet } from './AjouterCategorieSheet';
+import { AjouterDepenseSheet } from './AjouterDepenseSheet';
 import { ModifierBudgetSheet } from './ModifierBudgetSheet';
 
 /**
@@ -24,6 +25,7 @@ export function MonBudgetScreen({ navigation }: RootScreenProps<'MonBudget'>) {
   const [editMode, setEditMode] = useState(false);
   const [addSheetOpen, setAddSheetOpen] = useState(false);
   const [budgetSheetOpen, setBudgetSheetOpen] = useState(false);
+  const [addDepenseSheetOpen, setAddDepenseSheetOpen] = useState(false);
 
   const fixedLines = state.fixedSubCategories.map((sc) => ({
     label: sc.name,
@@ -109,7 +111,7 @@ export function MonBudgetScreen({ navigation }: RootScreenProps<'MonBudget'>) {
             if (section === 'fixe') navigation.navigate('DepensesFixes');
             if (section === 'historique') navigation.navigate('Historique');
           }}
-          onAdd={() => navigation.navigate('AjouterDepense')}
+          onAdd={() => setAddDepenseSheetOpen(true)}
         />
       </View>
 
@@ -122,6 +124,8 @@ export function MonBudgetScreen({ navigation }: RootScreenProps<'MonBudget'>) {
         currentBudget={state.budgetDefini}
         onSubmit={updateBudgetDefini}
       />
+
+      <AjouterDepenseSheet visible={addDepenseSheetOpen} onClose={() => setAddDepenseSheetOpen(false)} />
     </SafeAreaView>
   );
 }

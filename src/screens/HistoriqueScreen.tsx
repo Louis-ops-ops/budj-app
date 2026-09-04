@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavBar } from '../components';
@@ -7,6 +7,7 @@ import type { Expense } from '../data/types';
 import { colors, layout, spacing, typography } from '../theme';
 import { formatEuro } from '../utils/format';
 import type { RootScreenProps } from '../navigation/types';
+import { AjouterDepenseSheet } from './AjouterDepenseSheet';
 
 /**
  * Pixel perfect sur le node Figma 19:1175 "Historique des dépense" :
@@ -19,6 +20,7 @@ import type { RootScreenProps } from '../navigation/types';
  */
 export function HistoriqueScreen({ navigation }: RootScreenProps<'Historique'>) {
   const { state, displayCategories } = useBudj();
+  const [addDepenseSheetOpen, setAddDepenseSheetOpen] = useState(false);
 
   // displayCategories (pas state.categories) : une dépense orpheline suite à
   // une suppression de catégorie doit apparaître en gris ("Non catégorisé"),
@@ -93,9 +95,11 @@ export function HistoriqueScreen({ navigation }: RootScreenProps<'Historique'>) 
             if (section === 'categories') navigation.navigate('MonBudget');
             if (section === 'fixe') navigation.navigate('DepensesFixes');
           }}
-          onAdd={() => navigation.navigate('AjouterDepense')}
+          onAdd={() => setAddDepenseSheetOpen(true)}
         />
       </View>
+
+      <AjouterDepenseSheet visible={addDepenseSheetOpen} onClose={() => setAddDepenseSheetOpen(false)} />
     </SafeAreaView>
   );
 }

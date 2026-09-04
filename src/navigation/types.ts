@@ -14,7 +14,6 @@ export type RootStackParamList = {
   DepensesFixes: undefined;
   DepensesFixesDetail: undefined;
   Historique: undefined;
-  AjouterDepense: undefined;
 };
 
 export type RootScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

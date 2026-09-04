@@ -7,7 +7,6 @@ import { DeplacerDepenseScreen } from '../screens/DeplacerDepenseScreen';
 import { DepensesFixesScreen } from '../screens/DepensesFixesScreen';
 import { DepensesFixesDetailScreen } from '../screens/DepensesFixesDetailScreen';
 import { HistoriqueScreen } from '../screens/HistoriqueScreen';
-import { AjouterDepenseScreen } from '../screens/AjouterDepenseScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -23,6 +22,12 @@ export function RootNavigator() {
           Les écrans de "drill-down" (détail, déplacer une dépense) gardent
           le slide_from_right par défaut, qui donne la sensation d'aller
           plus loin dans la navigation.
+
+          "Ajouter une dépense" n'est plus une route : c'est un <BottomSheet>
+          local (AjouterDepenseSheet), monté directement dans chacun des
+          écrans ci-dessous — la page en cours reste visible derrière et le
+          popup ne prend pas toute la hauteur de l'écran (demande explicite,
+          contrairement à l'ancien écran plein qui remplaçait la page).
         */}
         <Stack.Screen name="MonBudget" component={MonBudgetScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="CategorieDetail" component={CategorieDetailScreen} />
@@ -30,15 +35,6 @@ export function RootNavigator() {
         <Stack.Screen name="DepensesFixes" component={DepensesFixesScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="DepensesFixesDetail" component={DepensesFixesDetailScreen} />
         <Stack.Screen name="Historique" component={HistoriqueScreen} options={{ animation: 'fade' }} />
-        <Stack.Screen
-          name="AjouterDepense"
-          component={AjouterDepenseScreen}
-          // transparentModal + slide_from_bottom : le plus proche d'une vraie
-          // feuille glissée depuis le bas qu'offre native-stack pour un écran
-          // de route (les autres popups sont des <BottomSheet> locaux, mais
-          // celui-ci reste une route car "+" y mène depuis plusieurs écrans).
-          options={{ presentation: 'transparentModal', animation: 'slide_from_bottom' }}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   );

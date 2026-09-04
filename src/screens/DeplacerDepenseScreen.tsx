@@ -7,6 +7,7 @@ import { colors, layout, spacing, typography } from '../theme';
 import { formatEuro } from '../utils/format';
 import type { RootScreenProps } from '../navigation/types';
 import { NON_CATEGORISE_ID } from '../data/types';
+import { AjouterDepenseSheet } from './AjouterDepenseSheet';
 import { ModifierBudgetSheet } from './ModifierBudgetSheet';
 
 /**
@@ -29,6 +30,7 @@ export function DeplacerDepenseScreen({ route, navigation }: RootScreenProps<'De
   const isGhost = category?.id === NON_CATEGORISE_ID;
 
   const [editSheetOpen, setEditSheetOpen] = useState(false);
+  const [addDepenseSheetOpen, setAddDepenseSheetOpen] = useState(false);
   const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
   const [targetCategoryId, setTargetCategoryId] = useState<string | undefined>(otherCategories[0]?.id);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -119,7 +121,7 @@ export function DeplacerDepenseScreen({ route, navigation }: RootScreenProps<'De
             if (section === 'fixe') navigation.navigate('DepensesFixes');
             if (section === 'historique') navigation.navigate('Historique');
           }}
-          onAdd={() => navigation.navigate('AjouterDepense')}
+          onAdd={() => setAddDepenseSheetOpen(true)}
         />
       </View>
 
@@ -130,6 +132,8 @@ export function DeplacerDepenseScreen({ route, navigation }: RootScreenProps<'De
         currentBudget={category.budget}
         onSubmit={(budget) => updateCategoryBudget(category.id, budget)}
       />
+
+      <AjouterDepenseSheet visible={addDepenseSheetOpen} onClose={() => setAddDepenseSheetOpen(false)} />
     </SafeAreaView>
   );
 }
