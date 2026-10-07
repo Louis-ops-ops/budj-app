@@ -1,24 +1,21 @@
-/** Échelle d'espacement (section "6 / Les Spacing" du design system) */
+/** Échelle d'espacement (page Figma « Fondations », variables spacing/*). */
 export const spacing = {
-  none: 0,
-  xs: 6,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 18,
-  xxl: 24,
+  0: 0,
+  2: 2,
+  4: 4,
+  6: 6,
+  8: 8,
+  10: 10,
+  12: 12,
+  16: 16,
+  18: 18,
+  24: 24,
+  32: 32,
 } as const;
 
-/** Rayons de bordure utilisés dans le design */
-export const radius = {
-  card: 12,
-  screen: 24,
-  pill: 64, // "radius/rond" — boutons, badges, barre de nav
-} as const;
-
-/** Cadre de référence des écrans (iPhone 16 dans Figma) */
+/** Marges d'écran (variables layout/*), sur un écran de référence 393 × 852. */
 export const layout = {
-  screenPaddingX: spacing.xxl,
-  screenPaddingTop: 44,
-  screenPaddingBottom: spacing.xxl,
-};
+  screenMargin: 24,
+  screenTop: 44,
+  screenBottom: 24,
+} as const;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, radius, spacing } from '../theme';
+import { colors, radius, spacing } from '../theme/legacy';
 import type { CategoryColor } from '../data/types';
 
 type Props = {

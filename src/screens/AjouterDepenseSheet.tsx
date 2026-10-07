@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AmountField, BottomSheet, Icon } from '../components';
 import { useBudj } from '../data/BudjContext';
-import { colors, spacing, typography } from '../theme';
+import { colors, spacing, typography } from '../theme/legacy';
 import type { PaymentMethod } from '../data/types';
 
 const PAYMENT_METHODS: PaymentMethod[] = ['Carte bancaire', 'Espèces', 'Apple pay'];

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavBar } from '../components';
 import { useBudj } from '../data/BudjContext';
 import type { Expense } from '../data/types';
-import { colors, layout, spacing, typography } from '../theme';
+import { colors, layout, spacing, typography } from '../theme/legacy';
 import { formatEuro } from '../utils/format';
 import type { RootScreenProps } from '../navigation/types';
 import { AjouterDepenseSheet } from './AjouterDepenseSheet';

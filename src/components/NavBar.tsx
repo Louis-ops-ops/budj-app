@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, View } from 'react-native';
-import { colors, radius, typography } from '../theme';
+import { colors, radius, typography } from '../theme/legacy';
 import { Icon, IconName } from './Icon';
 
 export type NavSection = 'categories' | 'fixe' | 'historique';

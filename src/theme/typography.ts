@@ -1,81 +1,4 @@
-import { TextStyle } from 'react-native';
-import { colors } from './colors';
-
-/**
- * Échelle typographique — police "Outfit" (voir page Design system Figma).
- * Chaque style correspond à un rôle défini dans le design (H1-H3, Body, Label).
- */
-const family = {
-  regular: 'Outfit_400Regular',
-  medium: 'Outfit_500Medium',
-  semibold: 'Outfit_600SemiBold',
-  bold: 'Outfit_700Bold',
-};
-
-export const typography: Record<string, TextStyle> = {
-  h1: {
-    fontFamily: family.bold,
-    fontSize: 22,
-    lineHeight: 24,
-    color: colors.texte,
-  },
-  h2: {
-    // Le design system utilise SemiBold ici (pas Bold) — voir style "H2 - 20"
-    fontFamily: family.semibold,
-    fontSize: 20,
-    lineHeight: 22,
-    color: colors.texte,
-  },
-  h3: {
-    fontFamily: family.bold,
-    fontSize: 18,
-    lineHeight: 20,
-    color: colors.texte,
-  },
-  bodyBold: {
-    fontFamily: family.bold,
-    fontSize: 16,
-    lineHeight: 18,
-    color: colors.texte,
-  },
-  body: {
-    fontFamily: family.regular,
-    fontSize: 16,
-    lineHeight: 18,
-    color: colors.texte,
-  },
-  bodyMedium: {
-    fontFamily: family.medium,
-    fontSize: 16,
-    lineHeight: 18,
-    color: colors.texte,
-  },
-  labelXs: {
-    fontFamily: family.regular,
-    fontSize: 14,
-    lineHeight: 16,
-    color: colors.texte,
-  },
-  labelXsMedium: {
-    fontFamily: family.medium,
-    fontSize: 14,
-    lineHeight: 16,
-    color: colors.texte,
-  },
-  labelXxs: {
-    fontFamily: family.medium,
-    fontSize: 10,
-    lineHeight: 12,
-    color: colors.texte,
-  },
-  // Le très gros montant affiché sur l'accueil (854€)
-  montant: {
-    fontFamily: family.bold,
-    fontSize: 84,
-    lineHeight: 90,
-    color: colors.bleue[500],
-  },
-};
+import type { TextStyle } from 'react-native';
 
 export {
   Outfit_400Regular,
@@ -83,3 +6,40 @@ export {
   Outfit_600SemiBold,
   Outfit_700Bold,
 } from '@expo-google-fonts/outfit';
+
+/** Noms des polices chargées par useFonts (une famille par graisse). */
+export const fontFamily = {
+  regular: 'Outfit_400Regular',
+  medium: 'Outfit_500Medium',
+  semiBold: 'Outfit_600SemiBold',
+  bold: 'Outfit_700Bold',
+} as const;
+
+/** Styles de texte du design system (police Outfit). */
+export const textStyles = {
+  'display-xl': { fontFamily: fontFamily.medium, fontSize: 96, lineHeight: 96 },
+  'display-l': { fontFamily: fontFamily.bold, fontSize: 84, lineHeight: 84 },
+  'display-m': { fontFamily: fontFamily.medium, fontSize: 64, lineHeight: 64 },
+  'heading-h1': { fontFamily: fontFamily.bold, fontSize: 22, lineHeight: 24 },
+  'heading-h2': { fontFamily: fontFamily.semiBold, fontSize: 20, lineHeight: 22 },
+  'heading-h3': { fontFamily: fontFamily.medium, fontSize: 18, lineHeight: 20 },
+  'body-regular': { fontFamily: fontFamily.regular, fontSize: 16, lineHeight: 18 },
+  'body-medium': { fontFamily: fontFamily.medium, fontSize: 16, lineHeight: 18 },
+  'body-bold': { fontFamily: fontFamily.bold, fontSize: 16, lineHeight: 18 },
+  'label-regular': { fontFamily: fontFamily.regular, fontSize: 14, lineHeight: 16 },
+  'label-medium': { fontFamily: fontFamily.medium, fontSize: 14, lineHeight: 16 },
+  'label-bold': { fontFamily: fontFamily.bold, fontSize: 14, lineHeight: 16 },
+  'caption-medium': { fontFamily: fontFamily.medium, fontSize: 10, lineHeight: 12 },
+} satisfies Record<string, TextStyle>;
+
+export type TextVariant = keyof typeof textStyles;
+
+/**
+ * Agrandissement maximal accepté quand l'utilisateur augmente la taille du
+ * texte du système : les chiffres géants (Display) ne grossissent pas, sinon
+ * ils sortiraient de l'écran ; le reste du texte suit le réglage.
+ */
+export const maxFontScale = {
+  display: 1,
+  default: 1.4,
+} as const;

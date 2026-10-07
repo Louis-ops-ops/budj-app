@@ -1,61 +1,197 @@
+import { alpha, blue, cyan, green, mauve, neutral, orange, red } from './primitives';
+
+/** Couleurs proposées pour une catégorie créée par l'utilisateur. */
+export const CATEGORY_COLORS = ['vert', 'mauve', 'orange', 'rouge', 'cyan'] as const;
+export type CategoryColor = (typeof CATEGORY_COLORS)[number];
+
 /**
- * Palette issue de la page "Design system" du fichier Figma Budj.
+ * Toutes les teintes de catégorie du thème : les 5 couleurs utilisateur,
+ * `bleu` (réservé aux dépenses fixes) et `neutre` (« Sans catégorie », qui
+ * n'existe pas dans Figma : ajouté pour les dépenses orphelines).
  */
-export const colors = {
-  noir: '#060606',
-  blanc: '#FBFBFB',
-  gris: '#B5B5B5',
+export type CategoryTone = CategoryColor | 'bleu' | 'neutre';
 
-  bleue: {
-    50: '#F1F3FF',
-    100: '#E6E9FF',
-    200: '#D0D7FF',
-    300: '#AAB4FF',
-    400: '#7B85FF',
-    500: '#4549FF', // couleur de référence (5P) — boutons / actions
-    600: '#2A20FF',
-    700: '#1D0EF3',
-    800: '#170BCC',
-    900: '#170CB0',
-    950: '#070471',
+type Pair = { bg: string; fg: string };
+
+export type ColorTokens = {
+  bg: {
+    app: string;
+    sheet: string;
+    surface: string;
+    brandSubtle: string;
+    brandMuted: string;
+    brandStrong: string;
+    accent: string;
+    iconButton: string;
+    navAction: string;
+    navActive: string;
+    danger: string;
+    successSubtle: string;
+    dangerSubtle: string;
+    overlay: string;
+    none: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+    onAccent: string;
+    brand: string;
+    brandStrong: string;
+    brandSubtle: string;
+    brandFaint: string;
+    brandDeep: string;
+    success: string;
+    danger: string;
+  };
+  icon: {
+    primary: string;
+    brand: string;
+    onAccent: string;
+    muted: string;
+    danger: string;
+  };
+  border: {
+    brand: string;
+    brandSubtle: string;
+    subtle: string;
+    glass: string;
+  };
+  feedback: {
+    success: Pair;
+    danger: Pair;
+  };
+  category: Record<CategoryTone, Pair>;
+  effect: {
+    shadow: string;
+  };
+};
+
+export type TextColor = keyof ColorTokens['text'];
+export type IconColor = keyof ColorTokens['icon'];
+
+const light: ColorTokens = {
+  bg: {
+    app: neutral[50],
+    sheet: neutral[100],
+    surface: neutral[0],
+    brandSubtle: blue[50],
+    brandMuted: blue[100],
+    brandStrong: blue[200],
+    accent: blue[500],
+    iconButton: alpha.blue300_20,
+    navAction: alpha.blue300_30,
+    navActive: neutral[50],
+    danger: red[500],
+    successSubtle: alpha.green700_30,
+    dangerSubtle: alpha.red700_30,
+    overlay: alpha.black40,
+    none: alpha.transparent,
   },
-
-  // Couleurs des cartes de catégories (paires claire/sombre — popup Figma
-  // 18:497 "Pop up ajouter une catégorie" / div_colors_field 18:538).
-  categorie: {
-    vertClaire: '#F2FFF1',
-    vertSombre: '#116D09',
-    mauveClaire: '#FFF1F6',
-    mauveSombre: '#6D094C',
-    // orangeClaire est le seul swatch du sélecteur Figma qui n'a pas de
-    // variable nommée (juste un hex brut) : pas de "orange-sombre" défini
-    // dans le fichier. orangeSombre ci-dessous est donc une valeur choisie
-    // par cohérence avec les autres teintes "sombre", pas extraite de Figma.
-    orangeClaire: '#FFE7D0',
-    orangeSombre: '#6D3D09',
-    rougeClaire: '#FFD0D1',
-    rougeSombre: '#6D090B',
-    bleueClaire: '#D0F5FF',
-    bleueSombre: '#09386D',
-    // Pas une couleur du sélecteur Figma : réservée à la catégorie fantôme
-    // "Non catégorisé" (voir NON_CATEGORISE_ID dans data/types.ts), jamais
-    // proposée à l'utilisateur comme choix de couleur.
-    griseClaire: '#EDEDED',
-    griseSombre: '#6B6B6B',
+  text: {
+    primary: neutral[950],
+    secondary: neutral[400],
+    tertiary: neutral[700],
+    onAccent: neutral[50],
+    brand: blue[500],
+    brandStrong: blue[600],
+    brandSubtle: blue[400],
+    brandFaint: blue[300],
+    brandDeep: blue[950],
+    success: green[700],
+    danger: red[700],
   },
+  icon: {
+    primary: neutral[950],
+    brand: blue[500],
+    onAccent: neutral[50],
+    muted: neutral[400],
+    danger: red[500],
+  },
+  border: {
+    brand: blue[500],
+    brandSubtle: blue[300],
+    subtle: blue[50],
+    glass: alpha.white10,
+  },
+  feedback: {
+    success: { bg: green[100], fg: green[700] },
+    danger: { bg: red[100], fg: red[700] },
+  },
+  category: {
+    vert: { bg: green[100], fg: green[700] },
+    mauve: { bg: mauve[100], fg: mauve[700] },
+    orange: { bg: orange[100], fg: orange[700] },
+    rouge: { bg: red[100], fg: red[700] },
+    cyan: { bg: cyan[100], fg: cyan[700] },
+    bleu: { bg: blue[50], fg: blue[950] },
+    neutre: { bg: neutral[200], fg: neutral[700] },
+  },
+  effect: {
+    shadow: alpha.black25,
+  },
+};
 
-  // Alias sémantiques utilisés dans les composants
-  fond: '#FBFBFB',
-  texte: '#060606',
-  texteSecondaire: '#AAB4FF', // bleue-300, utilisé pour les sous-labels
-  action: '#4549FF', // bleue-500 / P
-} as const;
+const dark: ColorTokens = {
+  bg: {
+    app: neutral[950],
+    sheet: neutral[900],
+    surface: neutral[800],
+    brandSubtle: blue[975],
+    brandMuted: blue[950],
+    brandStrong: blue[900],
+    accent: blue[500],
+    iconButton: alpha.blue300_20,
+    navAction: alpha.blue300_30,
+    navActive: neutral[800],
+    danger: red[500],
+    successSubtle: alpha.green700_30,
+    dangerSubtle: alpha.red700_30,
+    overlay: alpha.black60,
+    none: alpha.transparent,
+  },
+  text: {
+    primary: neutral[50],
+    secondary: neutral[500],
+    tertiary: neutral[300],
+    onAccent: neutral[50],
+    brand: blue[300],
+    brandStrong: blue[200],
+    brandSubtle: blue[400],
+    brandFaint: blue[400],
+    brandDeep: blue[100],
+    success: green[200],
+    danger: red[200],
+  },
+  icon: {
+    primary: neutral[50],
+    brand: blue[300],
+    onAccent: neutral[50],
+    muted: neutral[500],
+    danger: red[500],
+  },
+  border: {
+    brand: blue[400],
+    brandSubtle: blue[800],
+    subtle: blue[950],
+    glass: alpha.white10,
+  },
+  feedback: {
+    success: { bg: green[900], fg: green[200] },
+    danger: { bg: red[900], fg: red[200] },
+  },
+  category: {
+    vert: { bg: green[900], fg: green[200] },
+    mauve: { bg: mauve[900], fg: mauve[200] },
+    orange: { bg: orange[900], fg: orange[200] },
+    rouge: { bg: red[900], fg: red[200] },
+    cyan: { bg: cyan[900], fg: cyan[200] },
+    bleu: { bg: blue[975], fg: blue[100] },
+    neutre: { bg: neutral[800], fg: neutral[300] },
+  },
+  effect: {
+    shadow: alpha.black25,
+  },
+};
 
-/** Ordre identique au sélecteur de couleur Figma (div_colors_field 18:538) */
-export const categoryPalette = [
-  { fond: colors.categorie.vertClaire, texte: colors.categorie.vertSombre },
-  { fond: colors.categorie.mauveClaire, texte: colors.categorie.mauveSombre },
-  { fond: colors.categorie.orangeClaire, texte: colors.categorie.orangeSombre },
-  { fond: colors.categorie.rougeClaire, texte: colors.categorie.rougeSombre },
-  { fond: colors.categorie.bleueClaire, texte: colors.categorie.bleueSombre },
-] as const;
+export const colors = { light, dark } as const;

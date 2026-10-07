@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { AmountField, BottomSheet, Icon } from '../components';
-import { colors, spacing, typography } from '../theme';
+import { colors, spacing, typography } from '../theme/legacy';
 
 type Props = {
   visible: boolean;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { BottomSheet, FormField, Icon } from '../components';
 import { useBudj } from '../data/BudjContext';
-import { categoryPalette, colors, spacing, typography } from '../theme';
+import { categoryPalette, colors, spacing, typography } from '../theme/legacy';
 import type { CategoryColor } from '../data/types';
 
 type Props = {

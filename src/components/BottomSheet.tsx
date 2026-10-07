@@ -1,6 +1,6 @@
 import React from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { radius, spacing } from '../theme';
+import { radius, spacing } from '../theme/legacy';
 
 type Props = {
   visible: boolean;
