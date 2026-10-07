@@ -18,6 +18,8 @@ type InputProps = BaseProps &
     /** Simple = un champ ; Double = libellé au-dessus de la valeur. */
     type?: 'simple' | 'double';
     label?: string;
+    /** Unité affichée après la valeur saisie (ex. « € »). */
+    suffix?: string;
     onChangeText: (text: string) => void;
   };
 
@@ -57,7 +59,7 @@ export function TextField(props: Props) {
     );
   }
 
-  const { type = 'simple', label, value, placeholder, onChangeText, accessibilityLabel, error, ...inputProps } = props;
+  const { type = 'simple', label, suffix, value, placeholder, onChangeText, accessibilityLabel, error, ...inputProps } = props;
   const isDouble = type === 'double';
   return (
     <View style={styles.wrapper}>
@@ -67,16 +69,19 @@ export function TextField(props: Props) {
             {label}
           </Text>
         )}
-        <SheetAwareTextInput
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          placeholderTextColor={isDouble ? colors.text.secondary : colors.text.brand}
-          accessibilityLabel={accessibilityLabel ?? label ?? placeholder}
-          selectionColor={colors.bg.accent}
-          style={styles.input}
-          {...inputProps}
-        />
+        <View style={styles.inputRow}>
+          <SheetAwareTextInput
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            placeholderTextColor={isDouble ? colors.text.secondary : colors.text.brand}
+            accessibilityLabel={accessibilityLabel ?? label ?? placeholder}
+            selectionColor={colors.bg.accent}
+            style={[styles.input, !!suffix && !isEmpty && styles.inputHug]}
+            {...inputProps}
+          />
+          {!!suffix && !isEmpty && <Text variant="body-regular">{suffix}</Text>}
+        </View>
       </View>
       {!!error && <FieldError message={error} />}
     </View>
@@ -114,13 +119,23 @@ const useStyles = makeStyles((t) => ({
   selectValue: {
     flexShrink: 1,
   },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing[4],
+  },
   input: {
+    flex: 1,
     ...t.text['body-regular'],
     color: t.colors.text.primary,
     height: t.text['body-regular'].lineHeight,
     padding: t.spacing[0],
     margin: t.spacing[0],
     includeFontPadding: false,
+  },
+  inputHug: {
+    flex: 0,
+    flexShrink: 1,
   },
   error: {
     marginTop: t.spacing[4],
