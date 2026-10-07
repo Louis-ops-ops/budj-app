@@ -68,6 +68,10 @@ export const BottomSheet = forwardRef<BottomSheetHandle, Props>(function BottomS
         index={0}
         enableDynamicSizing
         enablePanDownToClose
+        // Sans sur-glissement vers le haut, la bibliothèque n'ajoute plus sa marge
+        // de sécurité (~80) sous le contenu : la feuille épouse exactement sa hauteur.
+        enableOverDrag={false}
+        overDragResistanceFactor={0}
         onClose={onClosed}
         topInset={insets.top}
         backdropComponent={renderBackdrop}

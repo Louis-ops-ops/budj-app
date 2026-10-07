@@ -8,7 +8,8 @@ type Props = {
   label: string;
 };
 
-const PALETTE: CategoryTone[] = ['bleu', 'vert', 'mauve', 'orange', 'rouge', 'cyan'];
+// Pas de bleu : son fond est celui des listes de dépenses, la pastille y serait invisible.
+const PALETTE: CategoryTone[] = ['vert', 'mauve', 'orange', 'rouge', 'cyan'];
 
 function toneFor(label: string): CategoryTone {
   let hash = 0;

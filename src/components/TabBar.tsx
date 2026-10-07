@@ -21,6 +21,8 @@ type Props = {
   onSelect: (tab: TabKey) => void;
   /** Bouton « + » : ouvre la pop-up Ajouter une dépense. */
   onAdd: () => void;
+  /** Espace au-dessus de la barre : 18 (défaut) ou 12 sous un bouton d'action (onglet Fixes). */
+  topGap?: 12 | 18;
 };
 
 /**
@@ -28,7 +30,7 @@ type Props = {
  * les 4 onglets ; l'onglet actif affiche son libellé sur fond clair contouré.
  * Gère elle-même la marge basse (zone du geste d'accueil).
  */
-export function TabBar({ active, onSelect, onAdd }: Props) {
+export function TabBar({ active, onSelect, onAdd, topGap = 18 }: Props) {
   const styles = useStyles();
   const { layout, sizes, spacing } = useTheme();
   const insets = useSafeAreaInsets();
@@ -37,7 +39,7 @@ export function TabBar({ active, onSelect, onAdd }: Props) {
   const itemSlop = (sizes.touchTarget - itemHeight) / 2;
 
   return (
-    <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, layout.screenBottom) }]}>
+    <View style={[styles.container, { paddingTop: spacing[topGap], paddingBottom: Math.max(insets.bottom, layout.screenBottom) }]}>
       <View style={styles.bar}>
         <Pressable
           onPress={onAdd}
@@ -79,7 +81,6 @@ export function TabBar({ active, onSelect, onAdd }: Props) {
 const useStyles = makeStyles((t) => ({
   container: {
     paddingHorizontal: t.layout.screenMargin,
-    paddingTop: t.spacing[18],
     backgroundColor: t.colors.bg.app,
   },
   bar: {

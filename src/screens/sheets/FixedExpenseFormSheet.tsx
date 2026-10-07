@@ -4,7 +4,7 @@ import { AddChip, AmountInput, Button, CategoryChip, DayPicker, Text, TextField,
 import { useBudj } from '../../data/BudjContext';
 import { fixedAnnualCost, normalizeName } from '../../data/selectors';
 import { SheetScreen } from '../../navigation/SheetScreen';
-import type { RootScreenProps } from '../../navigation/routes';
+import type { RootScreenProps } from '../../navigation/types';
 import { makeStyles } from '../../theme';
 import { confirmDestructive } from '../../utils/confirm';
 import { centsToInput, formatMoney, parseAmountInput } from '../../utils/money';

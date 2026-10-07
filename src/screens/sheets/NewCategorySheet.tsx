@@ -5,7 +5,7 @@ import { useBudj } from '../../data/BudjContext';
 import { allocatedBudget, isCategoryNameTaken, normalizeName, spendingRatio } from '../../data/selectors';
 import type { CategoryColor } from '../../data/types';
 import { SheetScreen } from '../../navigation/SheetScreen';
-import type { RootScreenProps } from '../../navigation/routes';
+import type { RootScreenProps } from '../../navigation/types';
 import { CATEGORY_COLORS, makeStyles } from '../../theme';
 import { formatMoney, parseAmountInput, sanitizeAmountInput } from '../../utils/money';
 import { SheetHeader, SheetLabel, SheetSection } from './SheetParts';

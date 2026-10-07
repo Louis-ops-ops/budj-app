@@ -5,7 +5,7 @@ import { useBudj } from '../../data/BudjContext';
 import { monthOf } from '../../data/dates';
 import { allocatedBudget, categorySpent, categoryTone, findCategory, monthSpent, unallocatedBudget } from '../../data/selectors';
 import { SheetScreen } from '../../navigation/SheetScreen';
-import type { RootScreenProps } from '../../navigation/routes';
+import type { RootScreenProps } from '../../navigation/types';
 import { makeStyles } from '../../theme';
 import { centsToInput, formatMoney, formatSignedMoney, parseAmountInput } from '../../utils/money';
 import { SheetHeader, SheetLabel, SheetSection } from './SheetParts';

@@ -1,40 +1,63 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useMemo } from 'react';
+import { DarkTheme, DefaultTheme, NavigationContainer, type Theme as NavigationTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { MonBudgetScreen } from '../screens/MonBudgetScreen';
-import { CategorieDetailScreen } from '../screens/CategorieDetailScreen';
-import { DeplacerDepenseScreen } from '../screens/DeplacerDepenseScreen';
-import { DepensesFixesScreen } from '../screens/DepensesFixesScreen';
-import { DepensesFixesDetailScreen } from '../screens/DepensesFixesDetailScreen';
-import { HistoriqueScreen } from '../screens/HistoriqueScreen';
+import { CategoryDetailScreen } from '../screens/CategoryDetailScreen';
+import { FixedByCategoryScreen } from '../screens/FixedByCategoryScreen';
+import { MonthDetailScreen } from '../screens/MonthDetailScreen';
+import { MoveExpenseScreen } from '../screens/MoveExpenseScreen';
+import { AddExpenseSheet } from '../screens/sheets/AddExpenseSheet';
+import { EditBudgetSheet } from '../screens/sheets/EditBudgetSheet';
+import { FixedExpenseFormSheet } from '../screens/sheets/FixedExpenseFormSheet';
+import { NewCategorySheet } from '../screens/sheets/NewCategorySheet';
+import { useTheme } from '../theme';
 import type { RootStackParamList } from './types';
+import { TabsNavigator } from './TabsNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+/**
+ * Pile racine : les onglets, les écrans de détail, puis les pop-ups. Les
+ * pop-ups sont des écrans transparents qui dessinent leur propre BottomSheet
+ * (overlay, poignée et coins du design, impossibles à obtenir avec la
+ * présentation formSheet native).
+ */
 export function RootNavigator() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 220 }}>
-        {/*
-          Les 3 écrans reliés par la NavBar (Catégories/Fixe/Historique) sont
-          des allers-retours latéraux, pas des approfondissements — un fondu
-          rend ce changement d'onglet plus naturel qu'un slide directionnel.
-          Les écrans de "drill-down" (détail, déplacer une dépense) gardent
-          le slide_from_right par défaut, qui donne la sensation d'aller
-          plus loin dans la navigation.
+  const theme = useTheme();
+  const navigationTheme = useMemo<NavigationTheme>(() => {
+    const base = theme.scheme === 'dark' ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        primary: theme.colors.bg.accent,
+        background: theme.colors.bg.app,
+        card: theme.colors.bg.app,
+        text: theme.colors.text.primary,
+        border: theme.colors.border.subtle,
+      },
+    };
+  }, [theme]);
 
-          "Ajouter une dépense" n'est plus une route : c'est un <BottomSheet>
-          local (AjouterDepenseSheet), monté directement dans chacun des
-          écrans ci-dessous — la page en cours reste visible derrière et le
-          popup ne prend pas toute la hauteur de l'écran (demande explicite,
-          contrairement à l'ancien écran plein qui remplaçait la page).
-        */}
-        <Stack.Screen name="MonBudget" component={MonBudgetScreen} options={{ animation: 'fade' }} />
-        <Stack.Screen name="CategorieDetail" component={CategorieDetailScreen} />
-        <Stack.Screen name="DeplacerDepense" component={DeplacerDepenseScreen} />
-        <Stack.Screen name="DepensesFixes" component={DepensesFixesScreen} options={{ animation: 'fade' }} />
-        <Stack.Screen name="DepensesFixesDetail" component={DepensesFixesDetailScreen} />
-        <Stack.Screen name="Historique" component={HistoriqueScreen} options={{ animation: 'fade' }} />
+  return (
+    <NavigationContainer theme={navigationTheme}>
+      <Stack.Navigator screenOptions={{ headerShown: false, contentStyle: { backgroundColor: theme.colors.bg.app } }}>
+        <Stack.Screen name="Tabs" component={TabsNavigator} />
+        <Stack.Screen name="CategoryDetail" component={CategoryDetailScreen} />
+        <Stack.Screen name="MoveExpense" component={MoveExpenseScreen} />
+        <Stack.Screen name="FixedByCategory" component={FixedByCategoryScreen} />
+        <Stack.Screen name="MonthDetail" component={MonthDetailScreen} />
+        <Stack.Group
+          screenOptions={{
+            presentation: 'transparentModal',
+            animation: 'none',
+            contentStyle: { backgroundColor: theme.colors.bg.none },
+          }}
+        >
+          <Stack.Screen name="AddExpense" component={AddExpenseSheet} />
+          <Stack.Screen name="NewCategory" component={NewCategorySheet} />
+          <Stack.Screen name="EditBudget" component={EditBudgetSheet} />
+          <Stack.Screen name="FixedExpenseForm" component={FixedExpenseFormSheet} />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );

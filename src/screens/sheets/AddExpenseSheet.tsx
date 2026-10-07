@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Keyboard, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Keyboard, Pressable, View, type TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {
   AddChip,
@@ -19,10 +19,10 @@ import { dayOfMonth, makeDay, monthOf, type Day, type Month } from '../../data/d
 import { findCategory, remainingAfterExpense } from '../../data/selectors';
 import type { Category } from '../../data/types';
 import { SheetScreen } from '../../navigation/SheetScreen';
-import type { RootScreenProps } from '../../navigation/routes';
-import { makeStyles, useTheme } from '../../theme';
+import type { RootScreenProps } from '../../navigation/types';
+import { makeStyles } from '../../theme';
 import { relativeDayLabel } from '../../utils/dateLabels';
-import { formatMoney, parseAmountInput, sanitizeAmountInput } from '../../utils/money';
+import { formatAmountInput, formatMoney, parseAmountInput, sanitizeAmountInput } from '../../utils/money';
 import { ChipWrap, SheetHeader, SheetLabel, SheetSection } from './SheetParts';
 
 type Entry = { key: string; amount: string; label: string; categoryId: string | null };
@@ -221,8 +221,10 @@ type CardProps = {
 /** Carte d'une dépense en mode multiple : montant, libellé et chips défilantes. */
 function ExpenseCard({ index, entry, categories, autoFocus, onChange, onRemove, onNewCategory }: CardProps) {
   const styles = useStyles();
-  const { colors } = useTheme();
+  const inputRef = useRef<TextInput>(null);
+  const [focused, setFocused] = useState(false);
   const number = index + 1;
+  const isEmpty = entry.amount === '';
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
@@ -230,22 +232,29 @@ function ExpenseCard({ index, entry, categories, autoFocus, onChange, onRemove, 
           <Text variant="label-medium" color="secondary">
             {`Dépense ${number}`}
           </Text>
-          <View style={styles.cardAmount}>
-            <SheetAwareTextInput
-              value={entry.amount}
-              onChangeText={(text) => onChange({ amount: sanitizeAmountInput(text) })}
-              keyboardType="decimal-pad"
-              placeholder="0"
-              placeholderTextColor={colors.text.secondary}
-              selectionColor={colors.bg.accent}
-              autoFocus={autoFocus}
-              accessibilityLabel={`Montant de la dépense ${number}`}
-              style={styles.cardAmountInput}
-            />
+          {/* Montant affiché en texte ; la saisie passe par un champ invisible (clavier numérique). */}
+          <Pressable onPress={() => inputRef.current?.focus()} accessible={false} style={styles.cardAmount}>
+            <Text variant="heading-h1" color={isEmpty ? 'secondary' : 'primary'}>
+              {isEmpty ? '0' : formatAmountInput(entry.amount)}
+            </Text>
+            {focused && <View style={styles.cardCursor} />}
             <Text variant="heading-h3" color="secondary">
               €
             </Text>
-          </View>
+            <SheetAwareTextInput
+              ref={inputRef}
+              value={entry.amount}
+              onChangeText={(text) => onChange({ amount: sanitizeAmountInput(text) })}
+              keyboardType="decimal-pad"
+              autoFocus={autoFocus}
+              caretHidden
+              contextMenuHidden
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              accessibilityLabel={`Montant de la dépense ${number}`}
+              style={styles.hiddenInput}
+            />
+          </Pressable>
         </View>
         {index > 0 && <IconButton icon="delete" accessibilityLabel={`Retirer la dépense ${number}`} onPress={onRemove} />}
       </View>
@@ -314,12 +323,18 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'baseline',
     gap: t.spacing[4],
   },
-  cardAmountInput: {
-    ...t.text['heading-h1'],
-    color: t.colors.text.primary,
-    padding: t.spacing[0],
-    margin: t.spacing[0],
-    includeFontPadding: false,
+  cardCursor: {
+    width: t.sizes.amountCursor.width,
+    height: t.text['heading-h1'].lineHeight,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.bg.accent,
+    alignSelf: 'center',
+  },
+  hiddenInput: {
+    position: 'absolute',
+    width: t.sizes.borderWidth.thin,
+    height: t.sizes.borderWidth.thin,
+    opacity: 0,
   },
   chipRow: {
     gap: t.spacing[8],
