@@ -33,7 +33,7 @@ type Props =
 export function CategoryCard(props: Props) {
   if (props.variant === 'fixe') {
     return (
-      <View style={[styles.card, { backgroundColor: colors.bleue[200] }]}>
+      <View style={[styles.card, { backgroundColor: colors.bleue[200], borderColor: colors.bleue[500] }]}>
         <View style={styles.row}>
           <Text style={[typography.bodyMedium, { color: colors.bleue[950] }]}>{props.title}</Text>
           <Text style={[typography.bodyMedium, { color: colors.bleue[950] }]}>{props.total}</Text>
@@ -49,7 +49,7 @@ export function CategoryCard(props: Props) {
   }
 
   return (
-    <View style={[styles.card, { backgroundColor: props.color.fond }]}>
+    <View style={[styles.card, { backgroundColor: props.color.fond, borderColor: props.color.texte }]}>
       <View style={styles.row}>
         <Text style={typography.bodyMedium}>{props.title}</Text>
         <Text style={typography.bodyMedium}>{props.remaining}</Text>
@@ -70,11 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     padding: spacing.md,
     gap: spacing.xs,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
   },
   row: {
     flexDirection: 'row',

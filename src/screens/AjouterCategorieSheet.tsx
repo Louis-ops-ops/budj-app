@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: colors.blanc,
     borderWidth: 2,
-    borderColor: colors.bleue[100],
+    borderColor: colors.bleue[300],
     borderRadius: 12,
     padding: spacing.md,
     gap: spacing.md,

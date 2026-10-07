@@ -4,7 +4,7 @@
 export const colors = {
   noir: '#060606',
   blanc: '#FBFBFB',
-  gris: '#CCCCCC',
+  gris: '#B5B5B5',
 
   bleue: {
     50: '#F1F3FF',

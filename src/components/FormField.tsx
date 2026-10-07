@@ -6,7 +6,7 @@ import { Icon } from './Icon';
 const boxStyle = {
   backgroundColor: colors.blanc,
   borderWidth: 2,
-  borderColor: colors.bleue[100],
+  borderColor: colors.bleue[300],
   borderRadius: radius.card,
   padding: spacing.md,
   width: '100%' as const,

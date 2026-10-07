@@ -11,7 +11,12 @@ type Props = {
   style?: ViewStyle;
 };
 
-/** "Master bouton" — variante Icône seule (badge rond, fond bleue/20%) */
+/**
+ * "Master bouton" — variante Icône seule : pastille ronde au fond bleue
+ * clair, cerclée de 1pt de bleue-500, l'icône reprenant le même bleue-500.
+ * L'icône est rendue à 0,625 × la taille du bouton, soit exactement sa
+ * taille Figma (20) pour le bouton standard de 32.
+ */
 export function IconButton({ icon, onPress, size = 32, tone = 'default', style }: Props) {
   return (
     <Pressable
@@ -24,7 +29,11 @@ export function IconButton({ icon, onPress, size = 32, tone = 'default', style }
         style,
       ]}
     >
-      <Icon name={icon} size={size * 0.6} color={tone === 'onPrimary' ? colors.blanc : colors.bleue[600]} />
+      <Icon
+        name={icon}
+        size={size * 0.625}
+        color={tone === 'onPrimary' ? colors.blanc : colors.bleue[500]}
+      />
     </Pressable>
   );
 }
@@ -37,6 +46,8 @@ const styles = StyleSheet.create({
   },
   default: {
     backgroundColor: 'rgba(170,180,255,0.2)',
+    borderWidth: 1,
+    borderColor: colors.bleue[500],
   },
   onPrimary: {
     backgroundColor: colors.bleue[500],
