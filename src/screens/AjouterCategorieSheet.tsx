@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { BottomSheet, FormField, Icon } from '../components';
+import { BottomSheet, FormField, Icon } from '../components/legacy';
 import { useBudj } from '../data/BudjContext';
 import { categoryPalette, colors, spacing, typography } from '../theme/legacy';
 import type { CategoryColor } from '../data/types';

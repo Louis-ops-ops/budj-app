@@ -1,53 +1,66 @@
 import React from 'react';
-import { Pressable, StyleSheet, ViewStyle } from 'react-native';
-import { colors, radius } from '../theme/legacy';
-import { Icon, IconName } from './Icon';
+import { Pressable, type StyleProp, type ViewStyle } from 'react-native';
+import { makeStyles, useTheme } from '../theme';
+import { Icon, type IconName } from './Icon';
 
 type Props = {
   icon: IconName;
-  rotation?: 0 | 90 | 180 | 270;
+  /** Obligatoire : un bouton sans texte doit être décrit au lecteur d'écran. */
+  accessibilityLabel: string;
   onPress?: () => void;
-  size?: number;
-  tone?: 'default' | 'onPrimary';
-  style?: ViewStyle;
+  rotation?: 0 | 90 | 180 | 270;
+  /** Bouton « enfoncé » (mode suppression ou édition en cours). */
+  active?: boolean;
+  disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
 /**
- * "Master bouton" — variante Icône seule : pastille ronde au fond bleue
- * clair, cerclée de 1pt de bleue-500, l'icône (16) reprenant le même bleue-500.
+ * Bouton rond 32×32 à icône seule (Figma « Bouton icône » 187:4). La zone
+ * tactile est étendue à 44×44 par hitSlop.
  */
-export function IconButton({ icon, rotation, onPress, size = 32, tone = 'default', style }: Props) {
+export function IconButton({ icon, accessibilityLabel, onPress, rotation, active = false, disabled = false, style }: Props) {
+  const styles = useStyles();
+  const { sizes } = useTheme();
+  const slop = (sizes.touchTarget - sizes.iconButton) / 2;
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled}
+      hitSlop={slop}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ disabled, selected: active }}
       style={({ pressed }) => [
         styles.base,
-        { width: size, height: size },
-        tone === 'onPrimary' ? styles.onPrimary : styles.default,
-        pressed && styles.pressed,
+        active && styles.active,
+        disabled ? styles.disabled : pressed && styles.pressed,
         style,
       ]}
     >
-      <Icon name={icon} rotation={rotation} size={16} tint={tone === 'onPrimary' ? colors.blanc : colors.bleue[500]} />
+      <Icon name={icon} size={16} color={active ? 'onAccent' : 'brand'} rotation={rotation} />
     </Pressable>
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((t) => ({
   base: {
-    borderRadius: radius.pill,
+    width: t.sizes.iconButton,
+    height: t.sizes.iconButton,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: t.radius.full,
+    borderWidth: t.sizes.borderWidth.thin,
+    borderColor: t.colors.border.brand,
+    backgroundColor: t.colors.bg.iconButton,
   },
-  default: {
-    backgroundColor: 'rgba(170,180,255,0.2)',
-    borderWidth: 1,
-    borderColor: colors.bleue[500],
+  active: {
+    backgroundColor: t.colors.bg.accent,
   },
-  onPrimary: {
-    backgroundColor: colors.bleue[500],
+  disabled: {
+    opacity: t.opacity.disabled,
   },
   pressed: {
-    opacity: 0.7,
+    opacity: t.opacity.pressed,
   },
-});
+}));

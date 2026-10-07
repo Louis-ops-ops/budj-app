@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, typography } from '../theme/legacy';
+import { colors, typography } from '../../theme/legacy';
 
 type Props = {
   /** Nombre de dépenses fixes prélevées à chaque jour du mois (1-31) */

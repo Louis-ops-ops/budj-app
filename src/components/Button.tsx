@@ -1,69 +1,94 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
-import { colors, radius, spacing, typography } from '../theme/legacy';
-
-type Variant = 'principale' | 'secondaire';
+import { Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
+import { makeStyles } from '../theme';
+import { Icon, type IconName } from './Icon';
+import { Text } from './Text';
 
 type Props = {
   label: string;
   onPress?: () => void;
-  variant?: Variant;
+  /** Primaire = action principale ; Secondaire = action alternative. */
+  variant?: 'primary' | 'secondary';
+  icon?: IconName;
   disabled?: boolean;
-  style?: ViewStyle;
+  /** Pleine largeur (pop-ups) ; sinon le bouton épouse son contenu. */
+  fullWidth?: boolean;
+  accessibilityHint?: string;
+  style?: StyleProp<ViewStyle>;
 };
 
-/**
- * "Master bouton" — variantes Principale / Secondaire (voir design system, section 4).
- * Pour le variant "Icône seule", voir IconButton.tsx.
- */
-export function Button({ label, onPress, variant = 'principale', disabled, style }: Props) {
-  const isPrincipale = variant === 'principale';
+/** Bouton du design system (Figma « Bouton » 185:1970). */
+export function Button({
+  label,
+  onPress,
+  variant = 'primary',
+  icon,
+  disabled = false,
+  fullWidth = false,
+  accessibilityHint,
+  style,
+}: Props) {
+  const styles = useStyles();
+  const isPrimary = variant === 'primary';
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled }}
       style={({ pressed }) => [
         styles.base,
-        isPrincipale ? styles.principale : styles.secondaire,
-        disabled && styles.disabled,
-        pressed && !disabled && styles.pressed,
+        isPrimary ? styles.primary : styles.secondary,
+        fullWidth ? styles.fullWidth : styles.hug,
+        disabled ? styles.disabled : pressed && styles.pressed,
         style,
       ]}
     >
-      <Text style={[typography.bodyBold, isPrincipale ? styles.textPrincipale : styles.textSecondaire]}>
+      {icon && (
+        <View>
+          <Icon name={icon} size={20} color={isPrimary ? 'onAccent' : 'brand'} />
+        </View>
+      )}
+      <Text variant={isPrimary ? 'heading-h3' : 'body-regular'} color={isPrimary ? 'onAccent' : 'brand'} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((t) => ({
   base: {
-    height: 48,
-    borderRadius: radius.pill,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.xxl,
-    width: '100%',
+    gap: t.spacing[12],
+    minHeight: t.sizes.touchTarget,
+    paddingHorizontal: t.spacing[16],
+    paddingVertical: t.spacing[12],
+    borderRadius: t.radius.full,
   },
-  principale: {
-    backgroundColor: colors.bleue[500],
+  primary: {
+    backgroundColor: t.colors.bg.accent,
   },
-  secondaire: {
-    backgroundColor: colors.blanc,
-    borderWidth: 1,
-    borderColor: colors.bleue[500],
+  secondary: {
+    backgroundColor: t.colors.bg.brandSubtle,
+    borderWidth: t.sizes.borderWidth.thin,
+    borderColor: t.colors.border.brand,
+    paddingHorizontal: t.spacing[16] - t.sizes.borderWidth.thin,
+    paddingVertical: t.spacing[12] - t.sizes.borderWidth.thin,
   },
-  textPrincipale: {
-    color: colors.blanc,
+  fullWidth: {
+    alignSelf: 'stretch',
   },
-  textSecondaire: {
-    color: colors.bleue[500],
+  hug: {
+    alignSelf: 'center',
   },
   disabled: {
-    opacity: 0.4,
+    opacity: t.opacity.disabled,
   },
   pressed: {
-    opacity: 0.85,
+    opacity: t.opacity.pressed,
   },
-});
+}));

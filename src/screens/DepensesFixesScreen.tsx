@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Avatar, Calendrier, Icon, NavBar, SwipeableRow } from '../components';
+import { Avatar, Calendrier, Icon, NavBar, SwipeableRow } from '../components/legacy';
 import { useBudj } from '../data/BudjContext';
 import { colors, layout, spacing, typography } from '../theme/legacy';
 import type { RootScreenProps } from '../navigation/types';

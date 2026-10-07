@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { AmountField, BottomSheet, Icon } from '../components';
+import { AmountField, BottomSheet, Icon } from '../components/legacy';
 import { colors, spacing, typography } from '../theme/legacy';
 
 type Props = {

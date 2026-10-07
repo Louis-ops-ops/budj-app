@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
-import { colors, radius, spacing, typography } from '../theme/legacy';
-import { Icon } from './Icon';
+import { colors, radius, spacing, typography } from '../../theme/legacy';
+import { Icon } from '../Icon';
 
 const boxStyle = {
   backgroundColor: colors.blanc,

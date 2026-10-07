@@ -18,6 +18,7 @@ export const sizes = {
   amountCursor: { width: 3, height: 72 },
   sheetHandle: { width: 40, height: 5 },
   chart: { barMax: 52, barMin: 2, top: 96, bottom: 72, legendDot: 8 },
+  quickAdjust: 76,
 } as const;
 
 /** Tailles d'icône utilisées dans le design system. */

@@ -1,81 +1,93 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { colors, radius, spacing, typography } from '../theme/legacy';
+import { Pressable, View } from 'react-native';
+import { makeStyles, useTheme, type CategoryTone } from '../theme';
+import { formatMoneyCompact } from '../utils/money';
+import { Icon } from './Icon';
+import { Text } from './Text';
 
-type FixeLine = { label: string; value: string };
+const DELETE_ICON_SIZE = 24;
 
-type Props =
-  | {
-      variant: 'fixe';
-      title: string;
-      total: string;
-      lines: FixeLine[];
-    }
-  | {
-      variant: 'normal';
-      title: string;
-      /** Budget alloué à la catégorie (affiché en petit, en bas) */
-      total: string;
-      /** Budget restant (affiché en grand, à côté du titre) */
-      remaining: string;
-      totalLabel?: string;
-      color: { fond: string; texte: string };
-    };
+type Props = {
+  category: { name: string; color: CategoryTone };
+  /** Restant du mois en centimes (négatif = dépassement). */
+  remaining: number;
+  /** Budget alloué en centimes. */
+  budget: number;
+  /** Normal = restant + budget ; Suppression = icône poubelle à la place. */
+  mode?: 'normal' | 'delete';
+  onPress?: () => void;
+  onDelete?: () => void;
+};
 
-/**
- * Carte de catégorie ("Div_categorie" / "Div_categorie_depenses_fixes"
- * dans le design system). Le variant "fixe" est réservé aux dépenses fixes
- * (non supprimables) et affiche le détail des sous-catégories ; le variant
- * "normal" met en avant le budget RESTANT (ligne du haut, à côté du titre)
- * et rappelle le budget alloué en dessous (mise à jour Figma : les deux
- * valeurs ont été inversées par rapport à la version précédente).
- */
-export function CategoryCard(props: Props) {
-  if (props.variant === 'fixe') {
+/** Carte d'une catégorie sur l'accueil (Figma « Carte catégorie » 190:264). */
+export function CategoryCard({ category, remaining, budget, mode = 'normal', onPress, onDelete }: Props) {
+  const styles = useStyles();
+  const { colors, sizes } = useTheme();
+  const tone = colors.category[category.color];
+
+  if (mode === 'delete') {
     return (
-      <View style={[styles.card, { backgroundColor: colors.bleue[200], borderColor: colors.bleue[500] }]}>
+      <View style={[styles.card, { backgroundColor: tone.bg }]}>
         <View style={styles.row}>
-          <Text style={[typography.bodyMedium, { color: colors.bleue[950] }]}>{props.title}</Text>
-          <Text style={[typography.bodyMedium, { color: colors.bleue[950] }]}>{props.total}</Text>
+          <Text variant="heading-h3" categoryColor={category.color} numberOfLines={1} style={styles.name}>
+            {category.name}
+          </Text>
+          <Pressable
+            onPress={onDelete}
+            hitSlop={(sizes.touchTarget - DELETE_ICON_SIZE) / 2}
+            accessibilityRole="button"
+            accessibilityLabel={`Supprimer la catégorie ${category.name}`}
+            style={({ pressed }) => pressed && styles.pressed}
+          >
+            <Icon name="delete" size={DELETE_ICON_SIZE} color="danger" />
+          </Pressable>
         </View>
-        {props.lines.map((line, i) => (
-          <View style={styles.row} key={i}>
-            <Text style={[typography.labelXs, { color: colors.bleue[400] }]}>{line.label}</Text>
-            <Text style={[typography.labelXs, { color: colors.bleue[400] }]}>{line.value}</Text>
-          </View>
-        ))}
       </View>
     );
   }
 
+  const isOver = remaining < 0;
   return (
-    <View style={[styles.card, { backgroundColor: props.color.fond, borderColor: props.color.texte }]}>
+    <Pressable
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${category.name}, ${formatMoneyCompact(remaining)} restants sur ${formatMoneyCompact(budget)}`}
+      style={({ pressed }) => [styles.card, { backgroundColor: tone.bg }, pressed && styles.pressed]}
+    >
       <View style={styles.row}>
-        <Text style={typography.bodyMedium}>{props.title}</Text>
-        <Text style={typography.bodyMedium}>{props.remaining}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={[typography.labelXxs, { color: props.color.texte }]}>
-          {props.totalLabel ?? 'Budget alloué'}
+        <Text variant="heading-h3" categoryColor={category.color} numberOfLines={1} style={styles.name}>
+          {category.name}
         </Text>
-        <Text style={[typography.labelXxs, { color: props.color.texte }]}>{props.total}</Text>
+        <Text variant="heading-h3" categoryColor={isOver ? undefined : category.color} color="danger">
+          {formatMoneyCompact(remaining)}
+        </Text>
       </View>
-    </View>
+      <View style={styles.row}>
+        <Text variant="label-regular">Budget alloué</Text>
+        <Text variant="label-regular">{formatMoneyCompact(budget)}</Text>
+      </View>
+    </Pressable>
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((t) => ({
   card: {
-    width: '100%',
-    borderRadius: radius.card,
-    padding: spacing.md,
-    gap: spacing.xs,
-    borderWidth: 1,
+    alignSelf: 'stretch',
+    gap: t.spacing[12],
+    padding: t.spacing[12],
+    borderRadius: t.radius.md,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '100%',
+    gap: t.spacing[8],
   },
-});
+  name: {
+    flexShrink: 1,
+  },
+  pressed: {
+    opacity: t.opacity.pressed,
+  },
+}));

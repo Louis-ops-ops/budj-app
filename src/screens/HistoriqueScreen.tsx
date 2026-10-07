@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { NavBar } from '../components';
+import { NavBar } from '../components/legacy';
 import { useBudj } from '../data/BudjContext';
 import type { Expense } from '../data/types';
 import { colors, layout, spacing, typography } from '../theme/legacy';

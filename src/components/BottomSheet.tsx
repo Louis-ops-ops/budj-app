@@ -1,82 +1,125 @@
-import React from 'react';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { radius, spacing } from '../theme/legacy';
+import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+import { View } from 'react-native';
+import GorhomBottomSheet, { BottomSheetBackdrop, BottomSheetScrollView, type BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { makeStyles, useTheme } from '../theme';
+import { InSheetContext } from './SheetInput';
+
+export type BottomSheetHandle = {
+  /** Referme la feuille avec son animation ; `onClosed` est appelé à la fin. */
+  close: () => void;
+};
 
 type Props = {
-  visible: boolean;
-  onClose: () => void;
   children: React.ReactNode;
+  /** Appelé une fois la feuille refermée (glissée vers le bas, overlay touché, close()). */
+  onClosed: () => void;
+  /** Espace entre les blocs : 24 (défaut) ou 16 (ajout de plusieurs dépenses). */
+  gap?: 16 | 24;
+  accessibilityLabel?: string;
 };
 
 /**
- * Feuille modale qui glisse depuis le bas de l'écran (voir popups Figma
- * "Pop up ajouter..." — coins arrondis en haut uniquement, poignée de
- * fermeture, fond #F6F6F6 légèrement distinct du blanc de l'app). S'appuie
- * sur le <Modal> natif de React Native (animationType="slide") pour une
- * animation fluide et cohérente sur iOS/Android/web sans dépendance
- * supplémentaire.
- *
- * Enveloppée dans un KeyboardAvoidingView : sans ça, le clavier natif du
- * téléphone recouvre la feuille (elle est ancrée en bas, pile là où le
- * clavier apparaît) et cache le champ en cours de saisie. La feuille est
- * positionnée par flexbox (justifyContent: 'flex-end') plutôt qu'en absolu
- * pour que le padding ajouté par le KeyboardAvoidingView la pousse
- * réellement vers le haut.
+ * Pop-up qui monte du bas de l'écran (calque « Bottom sheet » des maquettes) :
+ * poignée 40×5, fond bg/sheet, coins hauts arrondis, overlay bg/overlay.
+ * Sa hauteur suit son contenu ; elle défile si le clavier ne laisse pas assez
+ * de place.
  */
-export function BottomSheet({ visible, onClose, children }: Props) {
+export const BottomSheet = forwardRef<BottomSheetHandle, Props>(function BottomSheet(
+  { children, onClosed, gap = 24, accessibilityLabel },
+  ref,
+) {
+  const styles = useStyles();
+  const { colors, spacing } = useTheme();
+  const insets = useSafeAreaInsets();
+  const sheetRef = useRef<GorhomBottomSheet>(null);
+
+  useImperativeHandle(ref, () => ({ close: () => sheetRef.current?.close() }), []);
+
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        opacity={1}
+        pressBehavior="close"
+        accessibilityLabel="Fermer"
+        style={[props.style, { backgroundColor: colors.bg.overlay }]}
+      />
+    ),
+    [colors.bg.overlay],
+  );
+
+  const renderHandle = useCallback(
+    () => (
+      <View style={styles.handleArea} accessible accessibilityLabel="Faire glisser vers le bas pour fermer">
+        <View style={styles.handle} />
+      </View>
+    ),
+    [styles],
+  );
+
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose} />
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoider}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        pointerEvents="box-none"
+    <GestureHandlerRootView style={styles.root}>
+      <GorhomBottomSheet
+        ref={sheetRef}
+        index={0}
+        enableDynamicSizing
+        enablePanDownToClose
+        onClose={onClosed}
+        topInset={insets.top}
+        backdropComponent={renderBackdrop}
+        handleComponent={renderHandle}
+        backgroundStyle={styles.background}
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="restore"
+        android_keyboardInputMode="adjustResize"
+        accessibilityLabel={accessibilityLabel}
       >
-        <View style={styles.sheet}>
-          <Pressable onPress={onClose} hitSlop={12} style={styles.handle} />
-          {/*
-            Défilable et bornée en hauteur : une fois le clavier ouvert, la
-            place restante peut être insuffisante pour tout le contenu — sans
-            ça, un champ du haut resterait inaccessible plutôt que de pouvoir
-            scroller jusqu'à lui.
-          */}
-          <ScrollView
-            style={styles.scroll}
-            contentContainerStyle={styles.scrollContent}
+        <InSheetContext.Provider value>
+          <BottomSheetScrollView
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={[
+              styles.content,
+              {
+                gap: spacing[gap],
+                paddingTop: spacing[gap],
+                paddingBottom: Math.max(spacing[32], insets.bottom + spacing[16]),
+              },
+            ]}
           >
             {children}
-          </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+          </BottomSheetScrollView>
+        </InSheetContext.Provider>
+      </GorhomBottomSheet>
+    </GestureHandlerRootView>
   );
-}
+});
 
-const styles = StyleSheet.create({
-  backdrop: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(6,6,6,0.4)' },
-  keyboardAvoider: { flex: 1, justifyContent: 'flex-end' },
-  sheet: {
-    width: '100%',
-    maxHeight: '90%',
-    backgroundColor: '#F6F6F6',
-    borderTopLeftRadius: radius.screen,
-    borderTopRightRadius: radius.screen,
-    paddingTop: spacing.xxl,
-    alignItems: 'center',
+const useStyles = makeStyles((t) => ({
+  root: {
+    flex: 1,
   },
-  scroll: { width: '100%' },
-  scrollContent: {
-    paddingHorizontal: spacing.xxl,
-    paddingBottom: spacing.xxl + 24,
-    gap: spacing.xxl,
+  background: {
+    backgroundColor: t.colors.bg.sheet,
+    borderTopLeftRadius: t.radius.lg,
+    borderTopRightRadius: t.radius.lg,
+  },
+  handleArea: {
     alignItems: 'center',
+    paddingTop: t.spacing[12],
   },
   handle: {
-    width: 64,
-    height: 6,
-    borderRadius: 32,
-    backgroundColor: '#EEF1FE',
+    width: t.sizes.sheetHandle.width,
+    height: t.sizes.sheetHandle.height,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.bg.brandStrong,
   },
-});
+  content: {
+    alignItems: 'center',
+    paddingHorizontal: t.layout.screenMargin,
+  },
+}));
