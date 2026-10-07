@@ -50,7 +50,7 @@ export function DeplacerDepenseScreen({ route, navigation }: RootScreenProps<'De
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.headerRow}>
-          <IconButton icon="chevronRight" onPress={() => navigation.goBack()} style={{ transform: [{ rotate: '180deg' }] }} />
+          <IconButton icon="chevron" rotation={180} onPress={() => navigation.goBack()} />
         </View>
 
         <View style={styles.categorySection}>
@@ -108,7 +108,7 @@ export function DeplacerDepenseScreen({ route, navigation }: RootScreenProps<'De
             </View>
           )}
           <Pressable onPress={submit} disabled={!canSubmit} style={[styles.submitButton, !canSubmit && styles.submitButtonDisabled]}>
-            <Icon name="chevronRight" size={20} color={colors.blanc} />
+            <Icon name="chevron" size={20} tint={colors.blanc} />
             <Text style={styles.submitLabel}>Valider</Text>
           </Pressable>
         </View>

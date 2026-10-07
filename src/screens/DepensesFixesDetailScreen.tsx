@@ -38,9 +38,9 @@ export function DepensesFixesDetailScreen({ navigation }: RootScreenProps<'Depen
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.headerRow}>
-          <IconButton icon="chevronRight" onPress={() => navigation.goBack()} style={{ transform: [{ rotate: '180deg' }] }} />
+          <IconButton icon="chevron" rotation={180} onPress={() => navigation.goBack()} />
           <View style={{ flex: 1 }} />
-          <IconButton icon="plus" onPress={() => setAddSheetOpen(true)} />
+          <IconButton icon="add" onPress={() => setAddSheetOpen(true)} />
         </View>
 
         <Text style={[typography.h1, { color: colors.bleue[500] }]}>Dépenses fixes</Text>
@@ -69,7 +69,7 @@ export function DepensesFixesDetailScreen({ navigation }: RootScreenProps<'Depen
               <View style={styles.subHeaderRow}>
                 <Text style={typography.h2}>{sub.name}</Text>
                 <View style={{ flexDirection: 'row', gap: spacing.md }}>
-                  <IconButton icon="trash" onPress={() => deleteFixedSubCategory(sub.id)} />
+                  <IconButton icon="delete" onPress={() => deleteFixedSubCategory(sub.id)} />
                   <IconButton icon="edit" onPress={() => setEditingSubCategoryId(sub.id)} />
                 </View>
               </View>
@@ -91,7 +91,7 @@ export function DepensesFixesDetailScreen({ navigation }: RootScreenProps<'Depen
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
                         <Text style={[typography.bodyBold, { color: colors.bleue[500] }]}>-{exp.amount}€</Text>
-                        <IconButton icon="trash" size={28} onPress={() => deleteFixedExpense(exp.id)} />
+                        <IconButton icon="delete" size={28} onPress={() => deleteFixedExpense(exp.id)} />
                       </View>
                     </View>
                   </SwipeableRow>

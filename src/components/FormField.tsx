@@ -61,7 +61,7 @@ export function FormSelectField({ label, value, onPress, open }: SelectFieldProp
     <Pressable onPress={onPress} style={[boxStyle, styles.selectRow]}>
       <Text style={[typography.body, { color: value ? colors.bleue[400] : colors.gris }]}>{value ?? label}</Text>
       <View style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }}>
-        <Icon name="chevronDown" size={18} color={colors.gris} />
+        <Icon name="chevron" rotation={90} size={18} tint={colors.gris} />
       </View>
     </Pressable>
   );

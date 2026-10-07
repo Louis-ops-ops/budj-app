@@ -64,8 +64,8 @@ export function MonBudgetScreen({ navigation }: RootScreenProps<'MonBudget'>) {
               <View style={styles.categoriesHeader}>
                 <Text style={typography.h1}>Mes catégories</Text>
                 <View style={styles.categoriesActions}>
-                  <IconButton icon="plus" onPress={() => setAddSheetOpen(true)} />
-                  <IconButton icon={editMode ? 'close' : 'trash'} onPress={() => setEditMode((v) => !v)} />
+                  <IconButton icon="add" onPress={() => setAddSheetOpen(true)} />
+                  <IconButton icon={editMode ? 'remove' : 'delete'} onPress={() => setEditMode((v) => !v)} />
                 </View>
               </View>
 
@@ -95,7 +95,7 @@ export function MonBudgetScreen({ navigation }: RootScreenProps<'MonBudget'>) {
                     />
                   </View>
                   {editMode && item.id !== NON_CATEGORISE_ID && (
-                    <IconButton icon="trash" onPress={() => deleteCategory(item.id)} style={{ marginLeft: spacing.sm }} />
+                    <IconButton icon="delete" onPress={() => deleteCategory(item.id)} style={{ marginLeft: spacing.sm }} />
                   )}
                 </View>
               </Pressable>

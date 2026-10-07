@@ -69,7 +69,7 @@ export function DepensesFixesScreen({ navigation }: RootScreenProps<'DepensesFix
 
       <View style={styles.navBarWrapper}>
         <Pressable style={styles.addButton} onPress={() => setAddSheetOpen(true)}>
-          <Icon name="plus" size={20} color={colors.blanc} />
+          <Icon name="add" size={20} tint={colors.blanc} />
           <Text style={styles.addButtonLabel}>Ajouter</Text>
         </Pressable>
 

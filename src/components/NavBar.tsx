@@ -33,7 +33,7 @@ export function NavBar({ active, onNavigate, onAdd }: Props) {
     <View style={styles.container}>
       <Animated.View style={{ transform: [{ scale: addScale }] }}>
         <Pressable onPress={onAdd} onPressIn={pressIn} onPressOut={pressOut} style={styles.addButton}>
-          <Icon name="plus" size={20} color={colors.bleue[600]} />
+          <Icon name="add" size={20} tint={colors.bleue[600]} />
         </Pressable>
       </Animated.View>
 
@@ -92,7 +92,7 @@ function NavTab({
   return (
     <Pressable onPress={onPress} style={styles.tabPressable}>
       <Animated.View style={[styles.tab, { backgroundColor, borderColor }]}>
-        <Icon name={icon} size={20} color={isActive ? colors.bleue[500] : colors.bleue[400]} />
+        <Icon name={icon} size={20} tint={isActive ? colors.bleue[500] : colors.bleue[400]} />
         {isActive && (
           <Animated.Text style={[typography.labelXsMedium, styles.tabLabel, { opacity: labelOpacity }]}>
             {label}

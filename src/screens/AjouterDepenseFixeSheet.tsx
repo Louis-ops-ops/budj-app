@@ -159,7 +159,7 @@ export function AjouterDepenseFixeSheet({ visible, onClose, initialSubCategoryId
         disabled={!canSubmit}
         style={[styles.submitButton, !canSubmit && styles.submitButtonDisabled]}
       >
-        <Icon name="check" size={20} color={colors.blanc} />
+        <Icon name="chevron" size={20} tint={colors.blanc} />
         <Text style={styles.submitLabel}>Valider</Text>
       </Pressable>
     </BottomSheet>

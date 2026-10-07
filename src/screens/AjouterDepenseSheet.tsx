@@ -134,12 +134,12 @@ export function AjouterDepenseSheet({ visible, onClose }: Props) {
 
       <View style={styles.actions}>
         <Pressable onPress={addAnother} disabled={!canSubmit} style={[styles.secondaryButton, !canSubmit && styles.buttonDisabled]}>
-          <Icon name="plus" size={18} color={colors.bleue[500]} />
+          <Icon name="add" size={18} tint={colors.bleue[500]} />
           <Text style={styles.secondaryLabel}>Ajouter une autre dépense ?</Text>
         </Pressable>
 
         <Pressable onPress={submit} disabled={!canSubmit} style={[styles.primaryButton, !canSubmit && styles.buttonDisabled]}>
-          <Icon name="chevronRight" size={20} color={colors.blanc} />
+          <Icon name="chevron" size={20} tint={colors.blanc} />
           <Text style={styles.primaryLabel}>Valider</Text>
         </Pressable>
       </View>
@@ -163,7 +163,7 @@ function BareSelector({
       {/* Une fois choisie, la valeur reste dans le même gris clair que le reste du popup (pas de bleu/noir qui tranche) */}
       <Text style={[styles.bareInput, { color: colors.gris }]}>{value ?? placeholder}</Text>
       <View style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }}>
-        <Icon name="chevronDown" size={18} color={colors.gris} />
+        <Icon name="chevron" rotation={90} size={18} tint={colors.gris} />
       </View>
     </Pressable>
   );

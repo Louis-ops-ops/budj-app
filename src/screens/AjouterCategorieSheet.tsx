@@ -84,7 +84,7 @@ export function AjouterCategorieSheet({ visible, onClose }: Props) {
       </View>
 
       <Pressable onPress={submit} disabled={!canSubmit} style={[styles.submitButton, !canSubmit && styles.submitButtonDisabled]}>
-        <Icon name="chevronRight" size={20} color={colors.blanc} />
+        <Icon name="chevron" size={20} tint={colors.blanc} />
         <Text style={styles.submitLabel}>Ajouter la catégorie</Text>
       </Pressable>
     </BottomSheet>

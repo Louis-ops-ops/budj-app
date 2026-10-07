@@ -56,7 +56,7 @@ export function SwipeableRow({ onDelete, backgroundColor, children }: Props) {
     <View style={styles.container} onLayout={(e) => setFullWidth(e.nativeEvent.layout.width)}>
       <View style={styles.deleteSlot}>
         <IconButton
-          icon="trash"
+          icon="delete"
           onPress={() => {
             close();
             onDelete();

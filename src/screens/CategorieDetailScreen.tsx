@@ -37,7 +37,7 @@ export function CategorieDetailScreen({ route, navigation }: RootScreenProps<'Ca
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.headerRow}>
-          <IconButton icon="chevronRight" onPress={() => navigation.goBack()} style={{ transform: [{ rotate: '180deg' }] }} />
+          <IconButton icon="chevron" rotation={180} onPress={() => navigation.goBack()} />
         </View>
 
         <View style={styles.categorySection}>
@@ -53,8 +53,8 @@ export function CategorieDetailScreen({ route, navigation }: RootScreenProps<'Ca
           <View style={styles.titleRow}>
             <Text style={typography.h2}>Dernière dépenses</Text>
             <View style={styles.headerActions}>
-              <IconButton icon="trash" onPress={() => setDeleteMode((v) => !v)} />
-              <IconButton icon="moveTo" onPress={() => navigation.navigate('DeplacerDepense', { categoryId: category.id })} />
+              <IconButton icon="delete" onPress={() => setDeleteMode((v) => !v)} />
+              <IconButton icon="move" onPress={() => navigation.navigate('DeplacerDepense', { categoryId: category.id })} />
             </View>
           </View>
 
@@ -67,7 +67,7 @@ export function CategorieDetailScreen({ route, navigation }: RootScreenProps<'Ca
                 </View>
                 <View style={styles.expenseActions}>
                   <Text style={[typography.bodyBold, { color: category.color.texte }]}>-{formatEuro(item.amount)}€</Text>
-                  {deleteMode && <IconButton icon="trash" size={28} onPress={() => deleteExpense(item.id)} />}
+                  {deleteMode && <IconButton icon="delete" size={28} onPress={() => deleteExpense(item.id)} />}
                 </View>
               </View>
             ))}

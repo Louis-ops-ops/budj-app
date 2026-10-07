@@ -52,7 +52,7 @@ export function ModifierBudgetSheet({ visible, onClose, name, currentBudget, onS
       <AmountField value={amount} onChangeText={setAmount} />
 
       <Pressable onPress={submit} disabled={!canSubmit} style={[styles.submitButton, !canSubmit && styles.submitButtonDisabled]}>
-        <Icon name="chevronRight" size={20} color={colors.blanc} />
+        <Icon name="chevron" size={20} tint={colors.blanc} />
         <Text style={styles.submitLabel}>Confirmer modification</Text>
       </Pressable>
     </BottomSheet>

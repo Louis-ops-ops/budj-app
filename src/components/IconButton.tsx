@@ -5,6 +5,7 @@ import { Icon, IconName } from './Icon';
 
 type Props = {
   icon: IconName;
+  rotation?: 0 | 90 | 180 | 270;
   onPress?: () => void;
   size?: number;
   tone?: 'default' | 'onPrimary';
@@ -13,11 +14,9 @@ type Props = {
 
 /**
  * "Master bouton" — variante Icône seule : pastille ronde au fond bleue
- * clair, cerclée de 1pt de bleue-500, l'icône reprenant le même bleue-500.
- * L'icône est rendue à 0,625 × la taille du bouton, soit exactement sa
- * taille Figma (20) pour le bouton standard de 32.
+ * clair, cerclée de 1pt de bleue-500, l'icône (16) reprenant le même bleue-500.
  */
-export function IconButton({ icon, onPress, size = 32, tone = 'default', style }: Props) {
+export function IconButton({ icon, rotation, onPress, size = 32, tone = 'default', style }: Props) {
   return (
     <Pressable
       onPress={onPress}
@@ -29,11 +28,7 @@ export function IconButton({ icon, onPress, size = 32, tone = 'default', style }
         style,
       ]}
     >
-      <Icon
-        name={icon}
-        size={size * 0.625}
-        color={tone === 'onPrimary' ? colors.blanc : colors.bleue[500]}
-      />
+      <Icon name={icon} rotation={rotation} size={16} tint={tone === 'onPrimary' ? colors.blanc : colors.bleue[500]} />
     </Pressable>
   );
 }
