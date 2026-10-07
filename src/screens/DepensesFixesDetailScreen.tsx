@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar, IconButton, SwipeableRow } from '../components/legacy';
-import { useBudj } from '../data/BudjContext';
+import { useBudj } from '../data/legacy/BudjContext';
 import { colors, layout, spacing, typography } from '../theme/legacy';
 import type { RootScreenProps } from '../navigation/types';
 import { AjouterDepenseFixeSheet } from './AjouterDepenseFixeSheet';

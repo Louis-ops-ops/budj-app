@@ -1,62 +1,72 @@
-export type CategoryColor = { fond: string; texte: string };
+import type { CategoryColor } from '../theme/colors';
+import type { ThemePreference } from '../theme/ThemeProvider';
+import type { Day } from './dates';
 
-/** Catégorie "normale" créée par l'utilisateur (Courses, Restaurants, Sorties...) */
-export type Category = {
-  id: string;
-  name: string;
-  budget: number;
-  color: CategoryColor;
-};
+export type { CategoryColor, ThemePreference };
+export type { Day, Month } from './dates';
 
 /**
- * Sous-catégorie de "Dépenses fixes" (Distractions, Factures, Logement...).
- * A son propre budget, comme une mini-catégorie — voir le node Figma 30:851
- * ("Dans catégorie dépenses fixes") qui affiche chaque sous-catégorie avec
- * son propre en-tête + actions éditer/supprimer.
+ * Modèle de données v2, stocké en JSON sous une seule clé AsyncStorage.
+ * Tous les montants sont en centimes (entiers), les dates en `YYYY-MM-DD`.
  */
-export type FixedSubCategory = {
+export interface Settings {
+  /** Budget mensuel global, en centimes (ex. 190000 = 1 900 €). */
+  monthlyBudget: number;
+  theme: ThemePreference;
+}
+
+export interface Category {
+  id: string;
+  /** Unique, non vide. */
+  name: string;
+  color: CategoryColor;
+  /** Budget mensuel alloué, en centimes. */
+  monthlyBudget: number;
+  createdAt: Day;
+}
+
+/** Épargne, Factures, Distractions + celles créées par l'utilisateur. */
+export interface FixedSubcategory {
   id: string;
   name: string;
-  budget: number;
-};
+}
 
-/** Une dépense fixe récurrente (Netflix, EDF, loyer...) rattachée à une sous-catégorie */
-export type FixedExpense = {
+export interface FixedExpense {
   id: string;
-  subCategoryId: string;
+  /** Ex. Netflix. */
   label: string;
+  /** Montant mensuel, en centimes. */
   amount: number;
-  /** Jour du mois où elle est prélevée (1-31), pour l'affichage calendrier */
+  /** 1 à 31 ; si le mois est plus court, le prélèvement tombe le dernier jour. */
   dayOfMonth: number;
-};
+  subcategoryId: string;
+  /** Clé d'un logo connu (optionnel). */
+  logo?: string;
+}
 
-export type PaymentMethod = 'Carte bancaire' | 'Espèces' | 'Apple pay';
-
-/** Une dépense ponctuelle rattachée à une catégorie "normale" */
-export type Expense = {
+export interface Expense {
   id: string;
-  categoryId: string;
-  label: string;
+  /** En centimes. */
   amount: number;
-  /** Date ISO (YYYY-MM-DD) */
-  date: string;
-  paymentMethod: PaymentMethod;
-};
+  label: string;
+  /** null = « Sans catégorie ». */
+  categoryId: string | null;
+  date: Day;
+  /** Ex. « Carte bancaire ». */
+  detail?: string;
+}
 
-export type BudjState = {
-  budgetDefini: number;
+export interface BudjData {
+  schemaVersion: 2;
+  settings: Settings;
   categories: Category[];
-  fixedSubCategories: FixedSubCategory[];
+  fixedSubcategories: FixedSubcategory[];
   fixedExpenses: FixedExpense[];
   expenses: Expense[];
-};
+}
 
-/**
- * Identifiant réservé de la catégorie fantôme "Non catégorisé" : jamais
- * stockée dans `categories`, jamais proposée à la création ni comme cible
- * d'un déplacement — elle n'existe (virtuellement) que pour accueillir les
- * dépenses d'une catégorie que l'utilisateur a supprimée, le temps qu'il les
- * range ailleurs. Voir `deleteCategory` / `displayCategories` dans
- * BudjContext.tsx.
- */
-export const NON_CATEGORISE_ID = 'non-categorise';
+/** Sous-catégories de dépenses fixes toujours proposées. */
+export const DEFAULT_FIXED_SUBCATEGORIES = ['Épargne', 'Factures', 'Distractions'] as const;
+
+/** Libellé des dépenses dont la catégorie a été supprimée. */
+export const UNCATEGORIZED_LABEL = 'Sans catégorie';

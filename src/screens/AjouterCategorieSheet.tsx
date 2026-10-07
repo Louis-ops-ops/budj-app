@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { BottomSheet, FormField, Icon } from '../components/legacy';
-import { useBudj } from '../data/BudjContext';
+import { useBudj } from '../data/legacy/BudjContext';
 import { categoryPalette, colors, spacing, typography } from '../theme/legacy';
-import type { CategoryColor } from '../data/types';
+import type { CategoryColor } from '../data/legacy/types';
 
 type Props = {
   visible: boolean;

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CategoryStatsCard, FormSelectField, Icon, IconButton, NavBar } from '../components/legacy';
-import { useBudj } from '../data/BudjContext';
+import { useBudj } from '../data/legacy/BudjContext';
 import { colors, layout, spacing, typography } from '../theme/legacy';
 import { formatEuro } from '../utils/format';
 import type { RootScreenProps } from '../navigation/types';
-import { NON_CATEGORISE_ID } from '../data/types';
+import { NON_CATEGORISE_ID } from '../data/legacy/types';
 import { AjouterDepenseSheet } from './AjouterDepenseSheet';
 import { ModifierBudgetSheet } from './ModifierBudgetSheet';
 

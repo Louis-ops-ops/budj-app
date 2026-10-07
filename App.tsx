@@ -5,7 +5,7 @@ import * as SystemUI from 'expo-system-ui';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from '@expo-google-fonts/outfit';
 import { Outfit_400Regular, Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold } from './src/theme/typography';
-import { BudjProvider } from './src/data/BudjContext';
+import { BudjProvider } from './src/data/legacy/BudjContext';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { ThemeProvider, useTheme } from './src/theme';
 

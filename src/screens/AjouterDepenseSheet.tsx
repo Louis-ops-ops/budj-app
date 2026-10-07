@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AmountField, BottomSheet, Icon } from '../components/legacy';
-import { useBudj } from '../data/BudjContext';
+import { useBudj } from '../data/legacy/BudjContext';
 import { colors, spacing, typography } from '../theme/legacy';
-import type { PaymentMethod } from '../data/types';
+import type { PaymentMethod } from '../data/legacy/types';
 
 const PAYMENT_METHODS: PaymentMethod[] = ['Carte bancaire', 'Espèces', 'Apple pay'];
 
